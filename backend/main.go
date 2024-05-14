@@ -61,7 +61,41 @@ func GetUsers(w http.ResponseWriter, r *http.Request) {
 
 func CreateUser (w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	
+	stmt, err := db.Prepare("insert into users (id, first_name, middle_name, last_name, email, gender, civil_status, birthday, contact, address, age) values (?,?,?,?,?,?,?,?,?,?,?)")
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	var keyVal map[string]string
+	err = json.Unmarshal(body, &keyVal)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	firstName := keyVal["firstName"]
+	middleName := keyVal["middle_name"]
+	lastName := keyVal["last_name"]
+	email := keyVal["email"]
+	gender := keyVal["gender"]
+	civilStatus := keyVal["civil_status"]
+	birthday := keyVal["birthday"]
+	contact := keyVal["contact"]
+	address := keyVal["address"]
+	age := keyVal["age"]
+
+	_, err = stmt.Exec(firstName, middleName, lastName, email, gender, civilStatus, birthday, contact, address, age)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	w.WriteHeader(http.StatusCreated)
+
+	fmt.Fprintf(w, "New user was created")
 }
 
 // Task 5: Write code for get user here

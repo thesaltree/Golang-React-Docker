@@ -15,7 +15,6 @@ func main() {
 	Routers()
 }
 
-
 func Routers() {
 	InitDB()
 	defer db.Close()
@@ -28,12 +27,11 @@ func Routers() {
 		GetUser).Methods("GET")
 	router.HandleFunc("/users/{id}",
 		UpdateUser).Methods("PUT")
-	router.HandleFunc("/users/{id}",
-		DeleteUser).Methods("DELETE")
+	//router.HandleFunc("/users/{id}",
+	//	DeleteUser).Methods("DELETE")
 	http.ListenAndServe(":3000",
 		&CORSRouterDecorator{router})
 }
-
 
 func GetUsers(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
@@ -59,7 +57,7 @@ func GetUsers(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func CreateUser (w http.ResponseWriter, r *http.Request) {
+func CreateUser(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	stmt, err := db.Prepare("insert into users (id, first_name, middle_name, last_name, email, gender, civil_status, birthday, contact, address, age) values (?,?,?,?,?,?,?,?,?,?,?)")
 	if err != nil {
@@ -121,48 +119,89 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 
 	err = results.Err()
 	if err != nil {
-        http.Error(w, err.Error(), http.StatusInternalServerError)
-        return
-    }
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 
-    if !userFound {
-        w.WriteHeader(http.StatusNotFound)
-        fmt.Fprintf(w, "User not found with ID: %s", params["id"])
-        return
-    }
+	if !userFound {
+		w.WriteHeader(http.StatusNotFound)
+		fmt.Fprintf(w, "User not found with ID: %s", params["id"])
+		return
+	}
 
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(user)
 }
 
-// Task 6: write code for update user here
+func UpdateUser(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	params := mux.Vars(r)
+	stmt, err := db.Prepare("update users set first_name=?, middle_name=?, last_name=?, email=?, gender=?, civil_status=?, birthday=?, contact=?, address=?, age=? where id=?")
+	if err != nil {
+		panic(err.Error())
+	}
+	defer stmt.Close()
+
+	var userUpdate User
+	if err := json.NewDecoder(r.Body).Decode(&userUpdate); err != nil {
+		panic(err.Error())
+	}
+
+	result, err := stmt.Exec(
+		userUpdate.FirstName,
+		userUpdate.MiddleName,
+		userUpdate.LastName,
+		userUpdate.Email,
+		userUpdate.Gender,
+		userUpdate.CivilStatus,
+		userUpdate.Birthday,
+		userUpdate.Contact,
+		userUpdate.Address,
+		params["id"],
+	)
+	if err != nil {
+		panic(err.Error())
+	}
+
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		panic(err.Error())
+	}
+
+	if rowsAffected == 0 {
+		w.WriteHeader(http.StatusNotFound)
+		fmt.Fprintf(w, "No user found with ID = %s", params["id"])
+		return
+	}
+
+	fmt.Fprintf(w, "User with ID = %s was updated", params["id"])
+}
 
 // Task 7: Write code for delete user here
 
 type User struct {
-	ID string `json:"id"`
-	FirstName string `json:"firstName"`
-	MiddleName string `json:"middleName"`
-	LastName string `json:"lastName`
-	Email string `json:"email"`
-	Gender string `json:"gender"`
+	ID          string `json:"id"`
+	FirstName   string `json:"firstName"`
+	MiddleName  string `json:"middleName"`
+	LastName    string `json:"lastName`
+	Email       string `json:"email"`
+	Gender      string `json:"gender"`
 	CivilStatus string `json:"civilStatus"`
-	Birthday string `json:"birthday"`
-	Contact string `json:"contact"`
-	Address string `json:"address"`
-	Age string `json:"age"`
+	Birthday    string `json:"birthday"`
+	Contact     string `json:"contact"`
+	Address     string `json:"address"`
+	Age         string `json:"age"`
 }
 
 var db *sql.DB
 var err error
 
 func InitDB() {
-	db, err = sql.Open("mysql","user:password@tcp(127.0.0.1:3306)/userdb" )
+	db, err = sql.Open("mysql", "user:password@tcp(127.0.0.1:3306)/userdb")
 	if err != nil {
 		panic(err.Error())
 	}
 }
-
 
 type CORSRouterDecorator struct {
 	R *mux.Router

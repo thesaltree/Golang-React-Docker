@@ -98,7 +98,42 @@ func CreateUser (w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "New user was created")
 }
 
-// Task 5: Write code for get user here
+func GetUser(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	params := mux.Vars(r)
+	results, err := db.Query("select id, first_name, middle_name, last_name, email, gender, civil_status, birthday, contact, address, age from users where id= ?", params["id"])
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	defer results.Close()
+	var user User
+	userFound := false
+
+	for results.Next() {
+		err = results.Scan(&user.ID, &user.FirstName, &user.MiddleName, &user.LastName, &user.Email, &user.Gender, &user.CivilStatus, &user.Birthday, &user.Contact, &user.Address, &user.Age)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		userFound = true
+	}
+
+	err = results.Err()
+	if err != nil {
+        http.Error(w, err.Error(), http.StatusInternalServerError)
+        return
+    }
+
+    if !userFound {
+        w.WriteHeader(http.StatusNotFound)
+        fmt.Fprintf(w, "User not found with ID: %s", params["id"])
+        return
+    }
+
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(user)
+}
 
 // Task 6: write code for update user here
 

@@ -261,22 +261,6 @@ type User struct {
 	Address     string `json:"address"`
 }
 
-//func InitDB() {
-//	fmt.Println("Connecting to the database...")
-//	db, err = sql.Open("mysql", "username:userpassword@tcp(127.0.0.1:3306)/userdb")
-//	if err != nil {
-//		log.Fatalf("Error opening database: %v", err)
-//	}
-//	defer db.Close()
-//
-//	err = db.Ping()
-//	if err != nil {
-//		log.Fatalf("Error connecting to the database: %v", err)
-//	}
-//
-//	fmt.Println("Successfully connected to the database!")
-//}
-
 type CORSRouterDecorator struct {
 	R *mux.Router
 }

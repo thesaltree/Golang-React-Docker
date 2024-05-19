@@ -5,9 +5,7 @@ const ListUserComponent = () => {
     const [users, setUsers] = useState([])
 
     useEffect(() => {
-        // console.log("Inside useEffect")
         UserService.getUsers().then((res) => {
-            // console.log(res)
             setUsers(res)
         })
     }, [])

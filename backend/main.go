@@ -59,8 +59,6 @@ func initDBWithRetry() {
 }
 
 func Routers() {
-	//InitDB()
-	//defer db.Close()
 	router := mux.NewRouter()
 	router.HandleFunc("/users",
 		GetUsers).Methods("GET")

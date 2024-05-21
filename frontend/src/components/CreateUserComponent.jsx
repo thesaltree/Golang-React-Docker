@@ -4,19 +4,40 @@ import UserService from '../services/UserService';
 
 const CreateUserComponent = () => {
     const {id} = useParams()
-    const [user, setUser] = useState(undefined)
+    const user = {id: '', firstName: '', lastName: '', middleName: '', gender: '', email: '', contact: '', civilStatus: '', address: '', birthday: ''}
+    const [currentUser, setCurrentUser] = useState(user)
     useEffect(() => {
-        if(id) {
+        if(id !== '_add') {
             UserService.getUserById(id).then((res) => {
-                setUser(res)
-                console.log(res)
+                setCurrentUser(res)
+                console.log('in func',res)
             })
 
         }
-    }, [id])
+    }, [])
+
+    console.log('userrr', currentUser, id)
     return (
+
         <div>
-            <h1>Create User Component</h1>
+            {currentUser ? <h1>Update User Component</h1> : <h1>Create User Component</h1>}
+            <div>
+                <div>First name</div>
+                <input type={"text"} id={'first-name'} value={currentUser.firstName} onChange={(e) => {currentUser.firstName = e.target.value
+                setCurrentUser(currentUser)}}/>
+            </div>
+            <div>
+                <div>Middle name</div>
+                <input type={"text"} id={'middle-name'} defaultValue={currentUser.middleName}/>
+            </div>
+            <div>
+                <div>Last name</div>
+                <input type={"text"} id={'last-name'} defaultValue={currentUser.lastName}/>
+            </div>
+            <div>
+                <div>Last name</div>
+                <input type={"text"} id={'last-name'} defaultValue={currentUser.lastName}/>
+            </div>
         </div>
     )
 }

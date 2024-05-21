@@ -14,7 +14,7 @@ const ListUserComponent = () => {
 
     const addUser = () => {
         console.log('add user')
-        history.push('/add-user')
+        history.push('/add-user/_add')
     }
 
     const updateUser = (id) => {
@@ -56,7 +56,10 @@ const ListUserComponent = () => {
                                 <td>{user.name}</td>
                                 <td>{user.email}</td>
                                 <td><button className="btn btn-info" onClick={() => updateUser(user.id)}>Update</button></td>
-                                <td><button className="btn btn-danger" onClick={() => deleteUser(user.id)}>Delete</button></td>
+                                <td><button className="btn btn-danger" onClick={() => {
+                                    window.confirm('Are you sure you want to delete this user?')
+                                    deleteUser(user.id)
+                                }}>Delete</button></td>
                                 <td><button className="btn btn-info" onClick={() => viewUser(user.id)}>View</button></td>
                             </tr>
                         )

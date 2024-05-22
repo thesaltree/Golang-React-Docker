@@ -15,6 +15,7 @@ class UserService {
     }
      async createUser(user) {
         try {
+            console.log('seee',user);
             const response =  await axios.post(USER_API_BASE_URL, user);
             return response.data;
         } catch (error) {

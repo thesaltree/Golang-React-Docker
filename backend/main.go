@@ -100,7 +100,7 @@ func GetUsers(w http.ResponseWriter, r *http.Request) {
 
 func CreateUser(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	stmt, err := db.Prepare("insert into users (id, first_name, middle_name, last_name, email, gender, civil_status, birthday, contact, address) values (?,?,?,?,?,?,?,?,?,?)")
+	stmt, err := db.Prepare("insert into users (first_name, middle_name, last_name, email, gender, civil_status, birthday, contact, address) values (?,?,?,?,?,?,?,?,?)")
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -117,11 +117,11 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	firstName := keyVal["firstName"]
-	middleName := keyVal["middle_name"]
-	lastName := keyVal["last_name"]
+	middleName := keyVal["middleName"]
+	lastName := keyVal["lastName"]
 	email := keyVal["email"]
 	gender := keyVal["gender"]
-	civilStatus := keyVal["civil_status"]
+	civilStatus := keyVal["civilStatus"]
 	birthday := keyVal["birthday"]
 	contact := keyVal["contact"]
 	address := keyVal["address"]

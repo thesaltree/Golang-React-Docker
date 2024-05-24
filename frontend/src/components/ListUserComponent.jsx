@@ -13,7 +13,6 @@ const ListUserComponent = () => {
     }, [])
 
     const addUser = () => {
-        console.log('add user')
         history.push('/add-user/_add')
     }
 
@@ -53,7 +52,7 @@ const ListUserComponent = () => {
                         users.map((user) =>
                             <tr key={user.id}>
                                 <td>{user.id}</td>
-                                <td>{user.firstName}</td>
+                                <td>{user.firstName + ' ' + user.middleName + ' ' + user.lastName}</td>
                                 <td>{user.email}</td>
                                 <td><button className="btn btn-info" onClick={() => updateUser(user.id)}>Update</button></td>
                                 <td><button className="btn btn-danger" onClick={() => {

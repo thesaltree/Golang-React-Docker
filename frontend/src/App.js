@@ -5,8 +5,8 @@ import HeaderComponent from './components/HeaderComponent';
 import FooterComponent from './components/FooterComponent';
 import ListUserComponent from "./components/ListUserComponent";
 import CreateUserComponent from "./components/CreateUserComponent";
+import ViewUserComponent from "./components/ViewUserComponent";
 
-// Task 12: Write code for App function here(Update routes in the switch statement)
 function App() {
       return (
         <div>
@@ -19,6 +19,8 @@ function App() {
                             {ListUserComponent}></Route>
                         <Route path = "/add-user/:id" component =
                             {CreateUserComponent}></Route>
+                        <Route path = "/view-user/:id" component =
+                            {ViewUserComponent}></Route>
                     </Switch>
                   <FooterComponent />
             </Router>

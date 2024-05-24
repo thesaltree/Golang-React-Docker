@@ -12,12 +12,10 @@ const CreateUserComponent = () => {
         if(id !== '_add') {
             UserService.getUserById(id).then((res) => {
                 setCurrentUser(res)
-                console.log('in func',res)
             })
 
         }
     }, [id])
-    console.log('userrr', currentUser, id)
     return (
 
         <div>
@@ -104,6 +102,7 @@ const CreateUserComponent = () => {
                         console.log(res)
                     })
                 }
+                history.push('/users')
             }}>Submit
             </button>
             <button onClick={() => {

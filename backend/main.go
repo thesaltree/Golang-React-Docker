@@ -16,7 +16,6 @@ import (
 var db *sql.DB
 
 func main() {
-	// Initialize database connection with retry mechanism
 	initDBWithRetry()
 
 	defer db.Close()
